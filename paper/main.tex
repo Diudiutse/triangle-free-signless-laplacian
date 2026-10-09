@@ -18,27 +18,43 @@
 \newtheorem{theorem}{Theorem}
 \usepackage[colorlinks=true,allcolors=blue]{hyperref}
 \title{A sharp bound for the least signless Laplacian eigenvalue\\of triangle-free graphs}
-% Author information will be supplied by the submitting author.
-\author{}
+\author{Dongxiu Cai\textsuperscript{1}%
+\thanks{\textsuperscript{1} School of Mathematical Sciences, MOE-LSC,
+SHL-MAC, Shanghai Jiao Tong University, 800 Dongchuan Road,
+Shanghai 200240, P.R.~China. Emails:
+\texttt{diudiutse@sjtu.edu.cn} (Dongxiu Cai) and
+\texttt{czb911@sjtu.edu.cn} (Zhengbo Chen).}
+\and Zhengbo Chen\textsuperscript{1}
+\and Xiao-Dong Zhang\textsuperscript{1,2}%
+\thanks{\textsuperscript{2} Corresponding author: Xiao-Dong Zhang.
+Email: \texttt{xiaodong@sjtu.edu.cn}.}}
 \date{}
 \begin{document}
+\begingroup
+\makeatletter
+\let\@fnsymbol\@gobble
+\makeatother
 \maketitle
+\endgroup
 \begin{abstract}
 We prove that every finite simple triangle-free graph $G$ on $n\geq1$ vertices
-satisfies $\qmin(G)\leq7n/50$, where $\qmin(G)$ is its least signless
-Laplacian eigenvalue. Equality holds for the Higman--Sims graph and its
-balanced blow-ups, so the constant is optimal. This proves the bound
-conjectured by Balogh, Clemen, Lidick\'y, Norin and Volec. The proof uses
-five test column vectors associated with an ordered edge to obtain a matrix
-Rayleigh inequality. We establish the complementary trace inequality
-using explicit integer matrices and finite identities on all $410$
-triangle-free graphs of order eight. The required positivity follows
-from strict diagonal dominance, and the coefficient identities are
-checked by exact arithmetic. Sampling with replacement transfers these
-finite identities to every graph order. We give the sampling arguments
-and the spectral calculations in detail, together with the data and
-programs used for the finite verification.
+satisfies $\qmin(G)\leq7n/50$, where $\qmin(G)$ is the least eigenvalue
+of its signless Laplacian matrix $Q_G=D_G+A_G$, with $D_G$ the diagonal
+matrix of vertex degrees and $A_G$ the adjacency matrix. The constant is sharp, since the Higman--Sims graph
+and its balanced blow-ups attain equality, as shown by de Lima, Nikiforov
+and Oliveira (2016). This proves the bound
+conjectured by Balogh, Clemen, Lidick\'y, Norin and Volec
+(2023). The proof uses five test column vectors associated
+with an ordered edge to obtain a matrix Rayleigh inequality. Our use of
+local Rayleigh inequalities together with flag-algebra semidefinite
+programming is inspired by Zhou (2026). We use semidefinite
+programming and rational approximation to find the required positive
+semidefinite matrices, and complete the proof by exact correction and
+verification.
 \end{abstract}
+
+\noindent\textbf{2020 Mathematics Subject Classification.}
+Primary 05C50; Secondary 05C35, 90C22.
 
 \section{Introduction}\label{sec:introduction}
 
@@ -145,9 +161,16 @@ specify the integer entries and check these identities using exact
 arithmetic.
 
 The use of conditional flag probabilities follows the averaging principle
-of flag algebras~\cite{Razborov}. Related combinations of local Rayleigh
-inequalities and exact flag calculations appear in Zhou's work on
-$\{C_3,C_5\}$-free graphs~\cite{Zhou}. Here the eight positions are sampled
+of flag algebras~\cite{Razborov}. Our use of local Rayleigh inequalities
+together with flag-algebra semidefinite programming is inspired by Zhou's
+work on $\{C_3,C_5\}$-free graphs. Zhou first averages local Rayleigh
+inequalities~\cite[Lemma~2.1, pp.~4--5]{Zhou}, and then searches jointly
+for positive semidefinite matrices for the local Rayleigh expressions and
+ordinary flag squares, followed by rationalization and exact coefficient
+verification~\cite[Section~2.3, p.~7]{Zhou}. This is the method we draw on;
+the five test column vectors associated with an ordered edge and their
+$5\times5$ matrix constraint are constructed in the present paper.
+Here the eight positions are sampled
 independently with replacement from the original graph. Their sampled
 values may coincide, while the positions remain distinct vertices of
 the sampled graph. The resulting identities are exact for every
@@ -160,6 +183,9 @@ establishes the finite sampling and positivity lemmas.
 Section~\ref{sec:proof} constructs the five test column vectors, derives the
 matrix Rayleigh inequality, specifies the finite integer identities,
 and proves the bound.
+
+The programs and exact data used in the proof are available at\newline
+\url{https://github.com/Diudiutse/triangle-free-signless-laplacian}.
 
 \section{Preliminary}\label{sec:preliminary}
 \paragraph{Graphs and labels.}
@@ -1446,16 +1472,6 @@ c,&\text{if the triple }(i,j,c)\text{ is listed for }X_\tau,\\
 Matrix indices in the programs start at zero.
 Importing the two files produces the complete integer matrices with these entries.
 
-The program \href{https://github.com/Diudiutse/triangle-free-signless-laplacian/blob/main/programs/prepare_readable_data.py}{\path{programs/prepare_readable_data.py}} writes these two fixed-data
-files from the supplied integers in
-\href{https://github.com/Diudiutse/triangle-free-signless-laplacian/blob/main/arxiv/anc/filtered-sharp-exact-certificate.json}{\path{arxiv/anc/filtered-sharp-exact-certificate.json}}.
-It matches the original type graphs and rooted flags to the representatives
-from steps~4 and~5, and reorders the rows of $V_\sigma$ accordingly.
-Its column order, the corresponding entries of $X_\sigma$, and $a_\sigma$
-are retained.
-Thus the matrices used below have the same flag order as the newly
-computed $C_H^\sigma$.
-
 \paragraph{Step 8. Verifying the remaining conditions.}
 The last two programs check conditions~(\ref{cond:spectral-positive}),
 (\ref{cond:flag-positive}) and~(\ref{cond:finite-identity}) using these inputs.
@@ -1541,6 +1557,18 @@ The result follows from Lemmas~\ref{lem:sufficient-condition},
 \ref{lem:finite-trace-reduction} and~\ref{lem:finite-certificate}.\hfill$\square$
 
 % WB-PROOF-END
+
+\begin{samepage}
+\section*{Statement on AI use}
+The authors used GPT-6.1 Sol in the preparation of this work,
+including the development of proof arguments, the checking of
+intermediate steps, the generation and execution of semidefinite
+programming (SDP) code and code for verifying inequalities and equalities,
+and the drafting and revision of the manuscript and its
+LaTeX source. All mathematical results, arguments, and proofs were
+independently reviewed and verified by the authors, who take full
+responsibility for the accuracy and content of this work.\par
+\end{samepage}
 
 \begin{thebibliography}{9}
 \raggedright

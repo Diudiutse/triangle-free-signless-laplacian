@@ -3,7 +3,4 @@
 *.tex text eol=lf
 *.json text eol=lf
 *.pkl binary
-*.npz binary
-*.npy binary
 *.pdf binary
-arxiv/anc/*.json -text
