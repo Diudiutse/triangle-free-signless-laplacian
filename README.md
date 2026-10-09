@@ -1,6 +1,6 @@
 # A sharp bound for the least signless Laplacian eigenvalue of triangle-free graphs
 
-This repository contains the readable Python calculation programs, exact integer data, precomputed outputs, and paper for the bound
+This repository contains the readable Python calculation programs, exact integer data, precomputed outputs, and paper proving the sharp bound conjectured by [Balogh, Clemen, Lidický, Norin and Volec (2023)](https://doi.org/10.1137/22M150767X):
 
 $$q_{\min}(G)\leq \frac{7}{50}|V(G)|$$
 
