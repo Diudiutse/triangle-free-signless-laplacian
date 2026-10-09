@@ -1,0 +1,147 @@
+# Readable exact calculation programs
+
+The scripts follow the computation order in Section 3 of [the paper](../arxiv/main.pdf). This guide explains what is already supplied, what each script reads and writes, and how to run the calculations.
+
+## Requirements and quick check
+
+Use Python 3.10+ with NumPy and NetworkX. From the repository root:
+
+```bash
+python -m pip install -r requirements.txt
+python programs/verify_39.py
+python programs/verify_40.py
+```
+
+Tested locally with CPython 3.14.6, NumPy 2.5.1 and NetworkX 3.5. The supplied outputs are already present. No numerical optimization software is required for verification.
+
+`verify_39.py` imports the two fixed data modules and checks every strict diagonal-dominance inequality. It stops and prints the matrix label if one fails; a successful run prints `X_star and all X_sigma satisfy (39).` Its console verdict should be read directly.
+
+`verify_40.py` reads the graph list, $F_H$ dictionary, flag dictionary and $C_H^\sigma$ dictionary, then checks each graph separately. A nonzero result raises an exception identifying that graph's index. A successful run prints `(40) passed: all 410 totals are exactly zero.` and writes `results/verify_40.json`. It prints progress every ten graphs.
+
+## Recompute all six stages and verify
+
+Run these commands from the repository root, in this order:
+
+```bash
+python programs/01_expand_F.py
+python programs/02_generate_tau8.py
+python programs/03_compute_F_H.py
+python programs/04_generate_sigma.py
+python programs/05_generate_flags.py
+python programs/06_compute_C.py
+python programs/prepare_readable_data.py
+python programs/verify_39.py
+python programs/verify_40.py
+```
+
+Each script resolves input and output paths relative to its own file, so these commands work without changing the working directory. You can also change into `programs/` and run the same filenames without the `programs/` prefix.
+
+The numbered scripts overwrite their own generated outputs. The conversion script rewrites `spectral_data.py` and `sigma_data.py` using the regenerated flag order. The $C$ output is approximately 91 MB; enumeration and exact matrix verification take longer than checking (39). Progress messages indicate which graphs have been completed. This sequence reconstructs the coefficient and counting data and checks the supplied solution; it does not rediscover the integer matrices by running the SDP.
+
+## Inputs, operations and outputs
+
+All paths in the following table are relative to this `programs/` directory.
+
+| Script | Input | Operation | Output |
+| --- | --- | --- | --- |
+| `01_expand_F.py` | The five $U_i$ formulas and the definition of $\mathsf F$ encoded in the script. | Distribute products; remove loops, triangle terms and repeated adjacency factors; remove isolated vertices; collect exact coefficients of ordinary-isomorphic graphs using NetworkX. | `results/01/c_ij_J.pkl` |
+| `02_generate_tau8.py` | None. | Begin with the zero-vertex graph, add a vertex with each independent neighborhood, and retain one graph per ordinary isomorphism class. | `results/02/tau_8.pkl` |
+| `03_compute_F_H.py` | Outputs of stages 1 and 2. | `tinj(J,H)` counts edge-preserving injections and divides by the number of injections; compute $(F_H)_{ij}=\sum_J c_{ij,J}t_{\mathrm{inj}}(J,H)$. | `results/03/F_H.pkl` |
+| `04_generate_sigma.py` | The graph-generation function from stage 2. | Generate types of orders $0,\ldots,6$. | `results/04/sigma_list.pkl` |
+| `05_generate_flags.py` | Stage 4 type list; subset enumeration from stage 2. | Extend each type to $\ell=\lfloor(8+k)/2\rfloor$ vertices; use isomorphisms fixing vertices $1,\ldots,k$ individually. | `results/05/F_sigma.pkl` |
+| `06_compute_C.py` | Stage 2 graph list and stage 5 flag lists. | Enumerate ordered roots inducing the type and two disjoint free-vertex subsets; add the ordering multiplicity $((\ell-k)!)^2(8-2\ell+k)!$. | `results/06/C.pkl` |
+| `prepare_readable_data.py` | Stage 5 flag lists and `../arxiv/anc/filtered-eight-data.json`, `../arxiv/anc/filtered-sharp-exact-certificate.json`. | Match original types and flags to the generated representatives; reorder $V_\sigma$ rows; retain its column order and the corresponding $X_\sigma$. | `spectral_data.py`, `sigma_data.py`, `results/data_conversion.json` |
+| `verify_39.py` | `q`, `X_star`, `sigma_data` from the fixed modules. | Check $q+X_{ii}>\sum_{j\ne i}|X_{ij}|$ in every row of every matrix. | Console verdict |
+| `verify_40.py` | `L`, `q`, `Delta`, `X_star`, `sigma_data`; outputs of stages 2, 3, 5 and 6. | Check the complete exact trace identity for every $H$. | `results/verify_40.json` |
+
+The enumeration gives 410 graphs in $\mathcal T_8$, 66 types, and 27,060 matrices $C_H^\sigma$. The type counts for $k=0,\ldots,6$ are $1,1,2,3,7,14,38$.
+
+## Stored data structures
+
+A graph is an immutable pair of tuples:
+
+```python
+(vertices, edges)
+```
+
+Vertices are numbered `1,...,s`. Each edge is a pair `(a,b)` with `a < b`. For example,
+
+```python
+((1, 2, 3), ((1, 2), (2, 3)))
+```
+
+is a three-vertex path. The zero-vertex graph is `((), ())`. Immutable graph tuples can be dictionary keys.
+
+| File | Python structure |
+| --- | --- |
+| `results/01/c_ij_J.pkl` | `{(i,j): {J: Fraction}}`, for all 25 pairs $0\leq i,j\leq4$. Different entries may use differently labeled representatives of the same ordinary graph class. |
+| `results/02/tau_8.pkl` | `[H_0, H_1, ...]`, a list of 410 graph tuples. |
+| `results/03/F_H.pkl` | `{H: {(i,j): Fraction}}`, with all 25 entries for every $H$. |
+| `results/04/sigma_list.pkl` | A list of 66 type graph tuples in increasing vertex order. |
+| `results/05/F_sigma.pkl` | `{sigma: [P_0, P_1, ...]}`, an ordered flag list for each type. |
+| `results/06/C.pkl` | `{(sigma,H): [[int, ...], ...]}`, a complete dense integer matrix. |
+| `spectral_data.py` | Module variables `L`, `q`, `Delta`, `X_star`. |
+| `sigma_data.py` | `sigma_data = {sigma: {"V_sigma": ..., "X_sigma": ..., "a_sigma": ...}}`. |
+
+For a type with $k$ vertices, a flag has $\ell=\lfloor(8+k)/2\rfloor$ vertices. Its first $k$ vertices are labeled and induce the type. Flag isomorphisms fix those vertices individually.
+
+`C[(sigma,H)][p][p_prime]` is the entry for `F_sigma[sigma][p]` and `F_sigma[sigma][p_prime]`. Row `p` of `V_sigma` uses that same flag. The size of `X_sigma` equals the number of columns of `V_sigma`; it is not generally the number of flags. Matrix array indices start at zero; graph vertex labels start at one.
+
+The integer $q$ is a common denominator for the rational correction, not $q_{\min}(G)$. `Delta` is the supplied fixed positive denominator-clearing integer. Some integers have more than 10,000 decimal digits; the data modules disable Python's integer-string conversion limit and store long values as concatenated decimal strings before conversion to integers.
+
+The modules reconstruct symmetric integer matrices from upper-triangular entries. Entries not listed are zero. Importing the modules gives the full matrices, so the verifiers do not need to parse the original JSON.
+
+## Expansion and expectation convention
+
+A polynomial is a list of monomials. Each monomial stores its rational coefficient and its adjacency-factor edge list. Addition appends terms, scalar multiplication scales coefficients, and multiplication forms all products by the distributive law. These operations expand without simplifying; simplification and graph isomorphism collection occur afterwards in `collect_coefficients`.
+
+Every distinct position name occurring in a complete monomial is averaged independently and uniformly with replacement. The same name denotes the same position; different names may take the same value in the graph. No additional average-variable data structure is stored. Distinct expectation factors use fresh names: squaring $\mathbb E_a f(a)$ requires $\mathbb E_{a,b}f(a)f(b)$, not repeating the same position `a`.
+
+After simplification, each adjacency monomial represents a homomorphism density $t(J,G)$. The finite matrices $F_H$ use the **injective** density $t_{\mathrm{inj}}(J,H)$, as defined in the paper. Substituting $t(J,H)$ instead gives a different calculation.
+
+## Exact matrix arithmetic in (40)
+
+The verifier forms
+
+$$B=L(qI+X_*)L^{\mathsf T}$$
+
+once. For each $H$ it checks
+
+$$\frac{\Delta}{2^{80}}\operatorname{tr}(BF_H)
++\sum_\sigma\frac{\Delta}{40320a_\sigma^2}
+\operatorname{tr}\!\left(V_\sigma(qI+X_\sigma)V_\sigma^{\mathsf T}C_H^\sigma\right)=0.$$
+
+All NumPy arrays have `dtype=object`; their elements are Python arbitrary-precision integers or `Fraction` values. `@` denotes matrix multiplication, `.T` transpose, and `*` entrywise multiplication. The flag term uses
+
+$$\operatorname{tr}(V(qI+X)V^{\mathsf T}C)
+=\operatorname{tr}((qI+X)(V^{\mathsf T}CV))
+=\sum_{i,j}(qI+X)_{ji}(V^{\mathsf T}CV)_{ij}.$$
+
+This computes the smaller product $V^{\mathsf T}CV$ before multiplying by the large correction integers. The type-indexed lists in the code all use the same dictionary insertion order.
+
+## Inspect an output
+
+From the repository root:
+
+```python
+from pathlib import Path
+import pickle
+
+root = Path("programs/results")
+with (root / "01/c_ij_J.pkl").open("rb") as file:
+    coefficients = pickle.load(file)
+for J, coefficient in coefficients[(0, 0)].items():
+    print(J, coefficient)
+
+with (root / "02/tau_8.pkl").open("rb") as file:
+    tau_8 = pickle.load(file)
+with (root / "03/F_H.pkl").open("rb") as file:
+    F_H = pickle.load(file)
+print(F_H[tau_8[0]][(0, 1)])
+```
+
+Pickle is a Python serialization format, not text JSON. Only load trusted files. The supplied precomputed outputs let you start with verification; the six numbered scripts let you regenerate them.
+
+## Additional original verifiers
+
+See [../arxiv/anc/README.txt](../arxiv/anc/README.txt) for the separate verification implementation and its manifest of exact input hashes. Those verifiers use their original catalog ordering; the readable pipeline matches that data to its own explicitly generated flag order.

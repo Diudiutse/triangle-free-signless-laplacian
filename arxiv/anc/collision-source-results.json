@@ -1,0 +1,21 @@
+{
+  "inductive_catalog_numbers": [
+    1,
+    1,
+    2,
+    3,
+    7,
+    14,
+    38,
+    107,
+    410
+  ],
+  "independently_generated_eight_classes": 410,
+  "weighted_base": "P3 with masses 1/7,2/7,4/7",
+  "all_maps": 6561,
+  "source_classes_positive": 5,
+  "conditional_flag_entries": 106677,
+  "colliding_root_events": 249,
+  "spectral_source_vs_direct_exact_entries": 50,
+  "status": "passed"
+}

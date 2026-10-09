@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.venv/
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.tmp

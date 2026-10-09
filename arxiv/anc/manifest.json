@@ -1,0 +1,10 @@
+{
+  "sha256": {
+    "filtered-sharp-exact-certificate.json": "ae382f04cd026301b0f259f35d2ae0b4884e87e64122bca83d91cc1d6c95e5c1",
+    "filtered-eight-data.json": "a775708d4764e1644aaa06ecefec7c2cb69453beae9cdb46ccfc31ea3078c4be",
+    "filtered-eight-degree-family.json": "754201c0018691e5e6b4a03db355399036ff41f98019e91217e3e881dd1e7cce",
+    "filtered-eight-grams.npz": "ecef9e5e59098890915df52db179286f5e08619130f815067c1876dad1a9c6fc",
+    "trianglefree-eight-graphs.npy": "36912313215dbe716c1cb374c35ff80eec58dd10855934e78f44335badaee211",
+    "higman_sims_adjacency.npy": "e1dc2d8d411691d4bce4038f60c22c62a127699255caa249efbe4848ed4357f8"
+  }
+}
