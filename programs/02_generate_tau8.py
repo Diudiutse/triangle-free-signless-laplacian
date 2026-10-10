@@ -1,22 +1,24 @@
 """
-第二步：生成 tau_8，即所有八顶点无三角形简单无向图的同构类代表。
+Stage 2: generate tau_8, the isomorphism classes of eight-vertex
+triangle-free simple undirected graphs.
 
-从零顶点空图开始，每次增加一个顶点。
-新顶点的邻居必须在原图中构成独立集，否则会形成三角形。
-枚举所有这样的邻居集合，再用 NetworkX 判别同构，每类只保留一张图。
+Start with the graph on no vertices and add one vertex at a time.
+Its neighbors must form an independent set in the previous graph, to avoid triangles.
+Enumerate all such neighbor sets, then use NetworkX isomorphism to retain one
+representative of each class.
 
-为什么不会漏图：任意 n 顶点无三角形图删除一个顶点后，仍是无三角形图；
-把删去的顶点加回来时，其邻居必为独立集，因而会出现在本程序的枚举中。
-从零顶点图归纳到八顶点，就得到 tau_8 的全部代表。
+Completeness: deleting a vertex from any triangle-free graph leaves a triangle-free
+graph. When that vertex is restored, its neighbors form an independent set and hence
+occur in the enumeration. Induction up to eight vertices gives the complete catalog.
 
-输出 results/02/tau_8.pkl，其内容只是一个图列表。
-与第一步的图代表使用同样的格式：H=(顶点 tuple, 边 tuple)。例如：
-    ((1,2,3,4,5,6,7,8), ())                  # 八个孤立点
-    ((1,2,3,4,5,6,7,8), ((1,8),))           # 一条边和六个孤立点
-顶点编号只表示所选代表的编号；同构判别不要求保持编号。
+Write results/02/tau_8.pkl, containing a graph list.
+As in stage 1, each graph is H=(vertex tuple, edge tuple). Examples:
+    ((1,2,3,4,5,6,7,8), ())        # eight isolated vertices
+    ((1,2,3,4,5,6,7,8), ((1,8),)) # one edge and six isolated vertices
+Labels describe the chosen representative; isomorphisms need not preserve them.
 
-本程序独立生成图，不读取旧图目录，也不依赖第一步的系数文件。
-依赖：已安装的 NetworkX。运行：python 02_generate_tau8.py
+Generate the graphs independently, without an old catalog or stage 1 coefficients.
+Dependency: NetworkX. Run: python 02_generate_tau8.py
 """
 
 from pathlib import Path
@@ -25,21 +27,21 @@ import networkx as nx
 
 
 def all_subsets(vertices):
-    """列出顶点集的所有子集，包括空集；每个子集用 tuple 表示。"""
+    """List every subset of vertices, including the empty set, with each subset a tuple."""
     subsets = [()]
     for vertex in vertices:
-        # 已列出的每个子集有两种选择：不加入 vertex，或加入 vertex。
-        # 原来的列表对应不加入；下面的新列表对应加入。
+        # Each existing subset has two choices: exclude vertex or include vertex.
+        # The old list excludes it; the new list below includes it.
         subsets_with_vertex = []
         for subset in subsets:
             subsets_with_vertex.append(subset + (vertex,))
         subsets = subsets + subsets_with_vertex
-    # 例如 vertices=[1,2] 时，返回 [(), (1,), (2,), (1,2)]。
+    # For vertices=[1,2], return [(), (1,), (2,), (1,2)].
     return subsets
 
 
 def is_independent(graph, vertices):
-    """检查 vertices 中是否没有任何一对顶点在 graph 中相邻。"""
+    """Check that no pair of vertices is adjacent in graph."""
     for first_vertex, second_vertex in graph.edges:
         if first_vertex in vertices and second_vertex in vertices:
             return False
@@ -47,26 +49,26 @@ def is_independent(graph, vertices):
 
 
 def generate_triangle_free_graphs(number_of_vertices):
-    """返回指定顶点数的全部无三角形图代表，每个同构类恰保留一个。"""
-    # graphs用来存储固定order的所有无三角形图的同构类，随着n增大，graphs被同步更新为n顶点的所有无三角形图的同构类
-    # 归纳起点：零顶点图只有一个，就是空图。
+    """Return all triangle-free graphs of the specified order, one per isomorphism class."""
+    # graphs holds representatives of the current order and is updated to order n at each stage.
+    # Induction starts with the unique graph on no vertices, the empty graph.
     graphs = [nx.Graph()]
     for n in range(1, number_of_vertices + 1):
         new_graphs = []
-        #用往n-1顶点的图中加入新顶点的方式生成新图
+        # Generate new graphs by adding a vertex to each graph on n-1 vertices.
         for graph in graphs:
-            for neighbors in all_subsets(graph.nodes): #关于新加入的点与原先的图的哪些点相邻做讨论
-                if not is_independent(graph, neighbors):#如果新加入的点在原图的邻域不是独立集，则排除
+            for neighbors in all_subsets(graph.nodes): # Consider every possible neighbor set of the new vertex in the previous graph.
+                if not is_independent(graph, neighbors):# Discard sets that are not independent in the previous graph.
                     continue
 
-                # graph 有顶点 1,...,n-1；加入新顶点 n，再连接其全部邻居。
-                # 即使 neighbors 为空，也加入顶点 n，保留孤立点。
+                # graph has vertices 1,...,n-1; add vertex n and connect it to all its neighbors.
+                # Add vertex n even if neighbors is empty, retaining isolated vertices.
                 new_graph = graph.copy()
                 new_graph.add_node(n)
                 for vertex in neighbors:
                     new_graph.add_edge(vertex, n)
 
-                # 与本轮已有代表逐个比较。已有同构代表，就不重复保存。
+                # Compare with the current representatives; do not retain an isomorphic duplicate.
                 already_present = False
                 for representative in new_graphs:
                     if nx.is_isomorphic(new_graph, representative):
@@ -78,7 +80,7 @@ def generate_triangle_free_graphs(number_of_vertices):
         graphs = new_graphs
         print(str(n) + " vertices: " + str(len(graphs)) + " isomorphism classes.", flush=True)
 
-    # 把 NetworkX 图转成明确的 (顶点 tuple, 边 tuple)，方便后续程序直接读取。
+    # Convert NetworkX graphs to (vertex tuple, edge tuple) for subsequent scripts.
     result = []
     for graph in graphs:
         edges = []

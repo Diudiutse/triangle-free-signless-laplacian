@@ -1,11 +1,11 @@
-"""固定整数 L、q、Delta、X_star；矩阵指标为 0,...,4。"""
+"""Fixed integers L, q, Delta, X_star; matrix indices are 0,...,4."""
 import sys
-# 固定整数有一万多位，允许把其十进制字符串转为 Python 整数。
+# Some fixed integers have over 10,000 digits; allow conversion from decimal strings.
 if hasattr(sys, 'set_int_max_str_digits'):
     sys.set_int_max_str_digits(0)
 
 def symmetric_integer_matrix(dimension, upper_entries):
-    """上三角中未列出的位置为零；把每个 (i,j,value) 同时填到 (i,j) 与 (j,i)。"""
+    """Unlisted upper-triangular entries are zero; place (i,j,value) at both (i,j) and (j,i)."""
     matrix = []
     for i in range(dimension):
         row = []

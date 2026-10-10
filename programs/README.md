@@ -2,6 +2,8 @@
 
 The scripts follow the computation order in Section 3 of [the paper](../paper/main.pdf). This guide explains what is already supplied, what each script reads and writes, and how to run the calculations.
 
+All comments, docstrings, and error messages are in English. The English edition preserves the calculation logic and fixed integer data of the original programs.
+
 ## Requirements and quick check
 
 Use Python 3.10+ with NumPy and NetworkX. From the repository root:

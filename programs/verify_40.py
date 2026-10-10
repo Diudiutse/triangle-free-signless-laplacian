@@ -1,14 +1,14 @@
 """
-核验文章 (40)，对每个 H 检查：
+Verify equation (40) for every H:
   Delta/2^80 * tr(L(qI+X_star)L^T F_H)
   + sum_sigma Delta/(40320*a_sigma^2)
-      * tr(V_sigma(qI+X_sigma)V_sigma^T C_H_sigma) = 0。
+      * tr(V_sigma(qI+X_sigma)V_sigma^T C_H_sigma) = 0.
 
-固定数据只来自 spectral_data.py 和 sigma_data.py。
-main 加载第二、三、五、六步的 pickle；F_H 和 C 均使用重新计算的结果。
-Delta 是从 spectral_data.py 导入的固定正整数，用于清除分母。
-矩阵运算直接使用 NumPy；dtype=object 保持 Python 大整数和 Fraction 的精确运算。
-运行：python verify_40.py
+Import fixed data only from spectral_data.py and sigma_data.py.
+main loads the outputs of stages 2, 3, 5, and 6, using the recomputed F_H and C.
+Delta is the fixed positive integer imported from spectral_data.py to clear denominators.
+NumPy matrix operations use dtype=object to retain exact Python integers and Fractions.
+Run: python verify_40.py
 """
 
 from fractions import Fraction
@@ -32,37 +32,37 @@ def main():
     with (root / "results" / "06" / "C.pkl").open("rb") as file:
         C = pickle.load(file)
     if set(F_H) != set(tau_8) or set(sigma_data) != set(F_sigma):
-        raise ValueError("固定数据和计算结果的图或类型不一致。")
+        raise ValueError("The graph or type catalogs disagree with the fixed data or computed outputs.")
     if set(C) != {(sigma, H) for sigma in F_sigma for H in tau_8}:
-        raise ValueError("C 的键没有恰好覆盖所有 (sigma,H)。")
+        raise ValueError("The keys of C do not cover exactly all (sigma,H) pairs.")
 
     for sigma, data in sigma_data.items():
         if data["a_sigma"] <= 0:
-            raise ValueError("a_sigma 必须为正。")
+            raise ValueError("a_sigma must be positive.")
         if Delta % (40320 * data["a_sigma"] ** 2) != 0:
-            raise ValueError("Delta 未清除该 sigma 的分母。")
+            raise ValueError("Delta does not clear the denominator for this sigma.")
         if len(data["V_sigma"]) != len(F_sigma[sigma]):
-            raise ValueError("旗的顺序或矩阵尺寸不一致。")
+            raise ValueError("The flag order or matrix dimensions are inconsistent.")
         for H in tau_8:
             if len(C[(sigma, H)]) != len(F_sigma[sigma]) or any(
                 len(row) != len(F_sigma[sigma]) for row in C[(sigma, H)]
             ):
-                raise ValueError("C_H_sigma 的尺寸与 F_sigma 不一致。")
+                raise ValueError("The dimensions of C_H_sigma do not match F_sigma.")
 
-    # @ 是矩阵乘法，.T 是转置，object 保持整数与 Fraction 的精确运算。
+    # @ is matrix multiplication, .T is transpose, and object retains exact integers and Fractions.
     L_matrix = np.array(L, dtype=object)
     X_star_matrix = np.array(X_star, dtype=object)
     B = (
         L_matrix @ (q * np.eye(5, dtype=object) + X_star_matrix) @ L_matrix.T
     )
 
-    # 逐张 H 检查 (40)，后一项直接对 sigma 求和。
-    # 迹的循环性给出 tr(V(qI+X)V^T C) = tr((qI+X)(V^T C V))。
-    # 再用 tr(MN)=sum_{i,j} M[j,i]*N[i,j]，由 np.sum(M.T*N) 直接计算逐项相乘后求和即可。
+    # Check (40) for each H, writing the second term directly as a sum over sigma.
+    # Cyclicity of trace gives tr(V(qI+X)V^T C) = tr((qI+X)(V^T C V)).
+    # Use tr(MN)=sum_{i,j} M[j,i]*N[i,j]: np.sum(M.T*N) sums the entrywise products.
     print("Computing (40) for all " + str(len(tau_8)) + " graphs.", flush=True)
     for h, H in enumerate(tau_8):
-        # 这些列表都按 sigma_data 中类型的同一顺序排列。
-        # 求和中的 s 是列表下标；各列表的第 s 项属于同一个类型。
+        # These lists all use the same type order as sigma_data.
+        # s is a list index; the s-th entry of each list belongs to the same type.
         Vsigma = [
             np.array(sigma_data[sigma]["V_sigma"], dtype=object)
             for sigma in sigma_data
@@ -89,7 +89,7 @@ def main():
                 for s in range(len(Vsigma))
             )
         ) != 0:
-            raise ValueError("(40) 在 H" + str(h) + " 处失败。")
+            raise ValueError("(40) failed at H" + str(h) + ".")
         if (h + 1) % 10 == 0:
             print("Checked " + str(h + 1) + " graphs.", flush=True)
 

@@ -1,7 +1,9 @@
-"""固定数据 sigma_data={sigma: {V_sigma, X_sigma, a_sigma}}。
-sigma 是生成的图 tuple；V_sigma 第 p 行对应 F_sigma[sigma][p]。
-X_sigma 的行列对应 V_sigma 的列，a_sigma 为正整数。
-不保存旗列表、图列表或 C_H_sigma。"""
+"""
+Fixed data sigma_data={sigma: {V_sigma, X_sigma, a_sigma}}.
+sigma is a graph tuple; row p of V_sigma corresponds to F_sigma[sigma][p].
+The row and column indices of X_sigma are the columns of V_sigma; a_sigma is positive.
+Flag catalogs, graph catalogs, and C_H_sigma are stored separately.
+"""
 from spectral_data import symmetric_integer_matrix
 
 sigma_data = {

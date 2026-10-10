@@ -1,12 +1,13 @@
 """
-第三步：加载 c_ij_J.pkl 和 tau_8.pkl，按公式
+Stage 3: load c_ij_J.pkl and tau_8.pkl and use
     (F_H)_{ij} = sum_J c_{ij,J} * t_inj(J,H)
-计算并保存一个字典：{H: {(i,j): Fraction}}。
+to compute and save the dictionary {H: {(i,j): Fraction}}.
 
-图 J、H 都用 (顶点 tuple, 边 tuple) 表示，顶点编号为 1,...,顶点数。
-tinj(J,H) 只要求保持 J 的边，不要求保持非边。
-NumPy 用于同时检查全部单射；计数为整数，除法和求和使用 Fraction。
-运行：python 03_compute_F_H.py
+Graphs J and H are (vertex tuple, edge tuple), with vertices labeled 1,...,order.
+tinj(J,H) preserves every edge of J but need not preserve nonedges.
+NumPy checks all injections simultaneously; counts are integers, and division
+and summation use Fraction.
+Run: python 03_compute_F_H.py
 """
 
 from fractions import Fraction
@@ -17,17 +18,17 @@ import pickle
 import numpy as np
 
 
-# 同样大小的 J、H 使用同一张单射列表，避免重复枚举；不保存到文件。
+# Reuse the injection array for the same graph orders; it is not written to disk.
 injections_by_size = {}
 
 
-@cache  # 相同的 J、H 再次出现时直接使用已算出的密度。
+@cache  # Reuse a computed density when the same J and H occur again.
 def tinj(J, H):
-    """返回 t_inj(J,H) = 保持每条边的单射数 / 全部单射数。要求 |J| <= |H|。"""
+    """Return t_inj(J,H): edge-preserving injections divided by all injections; require |J|<=|H|."""
     s = len(J[0])
     n = len(H[0])
     if s > n:
-        raise ValueError("tinj 的定义要求 J 的顶点数不超过 H 的顶点数。")
+        raise ValueError("tinj requires the order of J to be at most the order of H.")
     if s == 0:
         return Fraction(1)
 
@@ -36,12 +37,12 @@ def tinj(J, H):
             list(permutations(range(1, n + 1), s)), dtype=np.int64
         )
     injections = injections_by_size[(n, s)]
-    # 每一行是一个单射 phi；第 a-1 列记录 phi(a)。
+    # Each row is an injection phi; column a-1 records phi(a).
 
     adjacency = np.zeros((n + 1, n + 1), dtype=bool)
-    # adjacency 是 H 的邻接矩阵，存为 (n+1) 行、(n+1) 列的 NumPy 布尔数组。
-    # adjacency[u,v] 为 True 当且仅当 {u,v} 是 H 的边，否则为 False。
-    # H 的顶点编号为 1,...,n，所以第 0 行、第 0 列空着不用；对角线为 False。
+    # adjacency is the adjacency matrix of H, an (n+1)-by-(n+1) NumPy Boolean array.
+    # adjacency[u,v] is True exactly when {u,v} is an edge of H, and False otherwise.
+    # Labels are 1,...,n, so row 0 and column 0 are unused; diagonal entries are False.
     for a, b in H[1]:
         adjacency[a, b] = True
         adjacency[b, a] = True
@@ -49,18 +50,18 @@ def tinj(J, H):
     valid = np.ones(len(injections), dtype=bool)
     for a, b in J[1]:
         images_of_a = injections[:, a - 1]
-        # images_of_a 是长度为 len(injections) 的一维整数数组。
-        # 冒号 : 表示取所有行，a-1 表示取对应顶点 a 的那一列。
-        # 若第 r 行对应单射 phi_r，则 images_of_a[r] = phi_r(a)，是 H 的顶点编号。
+        # images_of_a is a one-dimensional integer array of length len(injections).
+        # The colon selects all rows; a-1 selects the column corresponding to vertex a.
+        # If row r is phi_r, images_of_a[r]=phi_r(a), a vertex label of H.
         images_of_b = injections[:, b - 1]
-        # images_of_b 同样是一维整数数组，images_of_b[r] = phi_r(b)。
-        # 例如两行单射分别把 (a,b) 映到 (2,5)、(4,1)，则这两个数组分别是
-        # [2,4] 和 [5,1]；相同下标 r 的两个元素来自同一个单射。
-        # adjacency[images_of_a, images_of_b] 按相同下标逐对查邻接矩阵，
-        # 得到一维布尔数组；第 r 项是 adjacency[phi_r(a),phi_r(b)]，
-        # 表示第 r 个单射是否保持当前边 {a,b}。
+        # Likewise, images_of_b is one-dimensional and images_of_b[r]=phi_r(b).
+        # If two injections send (a,b) to (2,5) and (4,1), these arrays are
+        # [2,4] and [5,1]; entries with the same index r belong to the same injection.
+        # adjacency[images_of_a, images_of_b] checks the paired entries at equal indices,
+        # giving a Boolean array whose r-th entry is adjacency[phi_r(a),phi_r(b)].
+        # This entry records whether injection r preserves the current edge {a,b}.
         valid = valid & adjacency[images_of_a, images_of_b]
-    # valid[r] 为 True，恰好表示第 r 个单射保持 J 的全部边。
+    # valid[r] is True exactly when injection r preserves every edge of J.
     return Fraction(int(np.count_nonzero(valid)), len(injections))
 
 

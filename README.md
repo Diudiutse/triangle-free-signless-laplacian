@@ -10,6 +10,8 @@ for every finite simple triangle-free graph. Here $q_{\min}(G)$ is the least eig
 - **Complete program guide:** [programs/README.md](programs/README.md), including inputs, outputs, data structures, and execution order.
 - **Exact data:** [spectral_data.py](programs/spectral_data.py) and [sigma_data.py](programs/sigma_data.py).
 
+All Python comments, docstrings, and error messages in the published programs are in English.
+
 ## Authors
 
 Dongxiu Cai<sup>1</sup>, Zhengbo Chen<sup>1</sup>, and Xiao-Dong Zhang<sup>1,2</sup>.
@@ -109,7 +111,7 @@ pdflatex -interaction=nonstopmode -halt-on-error main.tex
 pdflatex -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-The paper is a review draft. The repository remains private pending author review.
+The paper is a review draft.
 
 ## Statement on AI use
 
