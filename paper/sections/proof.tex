@@ -1,0 +1,316 @@
+\section{Proof of the upper bound}
+\label{sec:proof}
+
+By Lemma~\ref{lem:sufficient-condition}, it suffices to construct a
+fixed real symmetric positive definite $5\times5$ matrix $B$ such that
+$\tr(B\mathsf F)\leq0$ for every finite simple triangle-free graph $G$
+of order $n\geq1$.
+We first express $\mathsf F$ as an average of fixed matrices indexed by
+$\mathcal T_8$, and then use Lemma~\ref{lem:exact-flag-square} to give
+finite matrix identities that imply this trace inequality.
+
+\subsection{Representation of \texorpdfstring{$\mathsf F$}{F}}
+\label{subsec:F-representation}
+
+Throughout this subsection, let $G$ be a finite simple triangle-free
+graph, let $V=V(G)$ and $n=|V|\geq1$, and write $A=A_G$.
+All positions listed in an expectation subscript are sampled
+independently and uniformly from $V$.
+For each $z\in V$,
+\begin{equation}\label{eq:degree-as-expectation}
+\deg_G(z)=\sum_{t\in V}A_{zt}=n\E_tA_{zt}.
+\end{equation}
+For fixed $x,y,z\in V$, substituting this identity and the entries of
+$A^2$ into \eqref{eq:new-U0}--\eqref{eq:new-U4} gives
+\begin{align}
+U_0^{xy}(z)
+&=\E_s\big[A_{zs}(A_{sx}-A_{sy})\big]
+  -\frac1{50}(A_{zx}-A_{zy})\notag\\
+&=\E_s[A_{zs}A_{sx}]-\E_s[A_{zs}A_{sy}]
+  -\frac1{50}A_{zx}+\frac1{50}A_{zy}.
+\label{eq:U0-expectation}
+\end{align}
+\begin{align}
+U_1^{xy}(z)
+&=\E_s\big[(A_{xs}-A_{ys})(A_{zx}+A_{zy})\big]\notag\\
+&=\E_s[A_{xs}A_{zx}]+\E_s[A_{xs}A_{zy}]
+  -\E_s[A_{ys}A_{zx}]-\E_s[A_{ys}A_{zy}].
+\label{eq:U1-expectation}
+\end{align}
+\begin{align}
+U_2^{xy}(z)
+&=\E_s\left[
+\left(A_{zs}-\frac{A_{xs}+A_{ys}}2\right)(A_{zx}-A_{zy})\right]
+\notag\\
+&=\E_s[A_{zs}A_{zx}]-\E_s[A_{zs}A_{zy}]
+  -\frac12\E_s[A_{xs}A_{zx}]+\frac12\E_s[A_{xs}A_{zy}]
+\notag\\
+&\quad-\frac12\E_s[A_{ys}A_{zx}]+\frac12\E_s[A_{ys}A_{zy}].
+\label{eq:U2-expectation}
+\end{align}
+\begin{align}
+U_3^{xy}(z)
+&=\E_{s,t}\big[A_{zs}A_{st}(A_{tx}-A_{ty})\big]\notag\\
+&\quad+\frac3{50}\E_s\big[A_{zs}(A_{sx}-A_{sy})\big]
+  -\frac1{625}(A_{zx}-A_{zy})\notag\\
+&=\E_{s,t}[A_{zs}A_{st}A_{tx}]-\E_{s,t}[A_{zs}A_{st}A_{ty}]
+\notag\\
+&\quad+\frac3{50}\E_s[A_{zs}A_{sx}]
+  -\frac3{50}\E_s[A_{zs}A_{sy}]
+  -\frac1{625}A_{zx}+\frac1{625}A_{zy}.
+\label{eq:U3-expectation}
+\end{align}
+\begin{align}
+U_4^{xy}(z)
+&=\E_{s,t}\left[
+\left(A_{zs}-\frac{A_{xs}+A_{ys}}2\right)
+\left(A_{zt}(A_{tx}-A_{ty})-\frac1{50}(A_{zx}-A_{zy})\right)
+\right.\notag\\
+&\hspace{43mm}\left.
+{}+\frac14(A_{xs}-A_{ys})(A_{xt}-A_{yt})(A_{zx}-A_{zy})
+\right]\notag\\
+&=\E_{s,t}[A_{zs}A_{zt}A_{tx}]-\E_{s,t}[A_{zs}A_{zt}A_{ty}]
+  -\frac1{50}\E_s[A_{zs}A_{zx}]+\frac1{50}\E_s[A_{zs}A_{zy}]
+\notag\\
+&\quad-\frac12\E_{s,t}[A_{xs}A_{zt}A_{tx}]
+  +\frac12\E_{s,t}[A_{xs}A_{zt}A_{ty}]
+  -\frac12\E_{s,t}[A_{ys}A_{zt}A_{tx}]
+  +\frac12\E_{s,t}[A_{ys}A_{zt}A_{ty}]\notag\\
+&\quad+\frac1{100}\E_s[A_{xs}A_{zx}]
+  -\frac1{100}\E_s[A_{xs}A_{zy}]
+  +\frac1{100}\E_s[A_{ys}A_{zx}]
+  -\frac1{100}\E_s[A_{ys}A_{zy}]\notag\\
+&\quad+\frac14\E_{s,t}[A_{xs}A_{xt}A_{zx}]
+  -\frac14\E_{s,t}[A_{xs}A_{xt}A_{zy}]
+  -\frac14\E_{s,t}[A_{xs}A_{yt}A_{zx}]
+  +\frac14\E_{s,t}[A_{xs}A_{yt}A_{zy}]\notag\\
+&\quad-\frac14\E_{s,t}[A_{ys}A_{xt}A_{zx}]
+  +\frac14\E_{s,t}[A_{ys}A_{xt}A_{zy}]
+  +\frac14\E_{s,t}[A_{ys}A_{yt}A_{zx}]
+  -\frac14\E_{s,t}[A_{ys}A_{yt}A_{zy}].
+\label{eq:U4-expectation}
+\end{align}
+
+Expanding \eqref{eq:new-F-entry} in coordinates and using
+\eqref{eq:degree-as-expectation}, we obtain, for $0\leq i,j\leq4$,
+\begin{align}
+\mathsf F_{ij}
+&=\E_{x,y,z}\left[A_{xy}\frac{\deg_G(z)}n
+U_i^{xy}(z)U_j^{xy}(z)\right]\notag\\
+&\quad+\E_{x,y,z,t}\big[A_{xy}A_{zt}U_i^{xy}(z)U_j^{xy}(t)\big]
+-\frac7{50}\E_{x,y,z}\big[A_{xy}U_i^{xy}(z)U_j^{xy}(z)\big]
+\notag\\
+&=\E_{x,y,z,t}\big[A_{xy}A_{zt}U_i^{xy}(z)U_j^{xy}(z)\big]
+\notag\\
+&\quad+\E_{x,y,z,t}\big[A_{xy}A_{zt}U_i^{xy}(z)U_j^{xy}(t)\big]
+-\frac7{50}\E_{x,y,z}\big[A_{xy}U_i^{xy}(z)U_j^{xy}(z)\big].
+\label{eq:F-expectation-expansion}
+\end{align}
+By linearity of expectation and the distributive law,
+$\mathsf F_{ij}$ is a rational linear combination of
+terms of the form
+\begin{equation}\label{eq:averaged-adjacency-monomial}
+\E_{v_1,\ldots,v_s}
+\left[\prod_{r=1}^m A_{v_{a_r}v_{b_r}}\right],
+\qquad 0\leq s\leq8,\quad 0\leq m\leq8,
+\quad a_r,b_r\in[s].
+\end{equation}
+Here $v_1,\ldots,v_s$ name distinct sampled positions.
+Their values in $V$ need not be distinct.
+
+The adjacency entries satisfy
+\[
+A_{uv}=A_{vu},\qquad A_{uv}^2=A_{uv},\qquad A_{uu}=0,
+\qquad A_{uv}A_{vw}A_{wu}=0.
+\]
+The last equality uses triangle-freeness.
+Hence repeated adjacency factors can be replaced by one factor,
+and a term containing a loop or a triangle vanishes.
+For each remaining term in \eqref{eq:averaged-adjacency-monomial}, set
+\[
+J=\left([s],\big\{\{a_r,b_r\}:1\leq r\leq m\big\}\right).
+\]
+Then $J$ is triangle-free, and
+\begin{align*}
+\E_{v_1,\ldots,v_s}
+\left[\prod_{r=1}^m A_{v_{a_r}v_{b_r}}\right]
+&=\frac1{n^s}\sum_{v_1,\ldots,v_s\in V}
+\prod_{\{a,b\}\in E(J)}A_{v_av_b}\\
+&=t(J,G).
+\end{align*}
+Collecting the coefficients of isomorphic graphs therefore gives
+\begin{equation}\label{eq:hom-expansion}
+\mathsf F_{ij}
+=\sum_{s=0}^8\sum_{J\in\mathcal T_s}c_{i,j,J}\,t(J,G),
+\qquad c_{i,j,J}\in\mathbb Q.
+\end{equation}
+$c_{i,j,J}$ is independent of $G$.
+Interchanging $i,j$ in the first and last terms of
+\eqref{eq:F-expectation-expansion}, and also interchanging $z,t$ in
+its second term, gives $c_{i,j,J}=c_{j,i,J}$ after relabeling the sampled
+positions.
+
+\subsection{Construction of \texorpdfstring{$B$}{B}}
+\label{subsec:matrix-construction}
+
+For each $H\in\mathcal T_8$, define the rational symmetric
+$5\times5$ matrix $F_H$ by
+\begin{equation}\label{eq:FH}
+(F_H)_{ij}
+=\sum_{s=0}^8\sum_{J\in\mathcal T_s}
+c_{i,j,J}\,t_{\mathrm{inj}}(J,H),
+\qquad 0\leq i,j\leq4.
+\end{equation}
+\begin{lemma}\label{lem:finite-trace-reduction}
+For $k=0,\ldots,6$, let $\ell=\lfloor(8+k)/2\rfloor$.
+Suppose there exists a fixed real symmetric positive definite
+$5\times5$ matrix $B$, and for every type
+$\sigma\in\bigcup_{k=0}^6\mathcal T_k$ there exists a fixed real
+symmetric positive semidefinite matrix $M_\sigma$, with rows and columns
+indexed by $\mathcal F_{\sigma,\ell}$, such that
+\begin{equation}\label{eq:finite-trace-identities}
+\tr(BF_H)
+=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr(M_\sigma C_H^\sigma)
+\qquad\text{for every }H\in\mathcal T_8.
+\end{equation}
+Then $\tr(B\mathsf F)\leq0$ for every finite simple triangle-free graph
+$G$ of order $n\geq1$, where $\mathsf F$ is defined from $G$ by
+\eqref{eq:new-F-matrix}.
+Consequently, \eqref{eq:main-bound} holds for every finite simple
+triangle-free graph $G$ of order $n\geq1$.
+\end{lemma}
+\begin{proof}
+Fix a finite simple triangle-free graph $G$ of order $n\geq1$,
+and write $V=V(G)$.
+Let $\boldsymbol{X}=(X_1,\ldots,X_8)\in V^8$, where the coordinates
+$X_i$ are independent and uniformly distributed on $V$.
+By Lemma~\ref{lem:sampled-density-identity},
+\begin{align*}
+\mathsf F_{ij}
+&=\sum_{s=0}^8\sum_{J\in\mathcal T_s}c_{i,j,J}
+\sum_{H\in\mathcal T_8}t_{\mathrm{inj}}(J,H)
+\Pr(G_{\boldsymbol{X}}\cong H)\\
+&=\sum_{H\in\mathcal T_8}
+\left(\sum_{s=0}^8\sum_{J\in\mathcal T_s}
+c_{i,j,J}\,t_{\mathrm{inj}}(J,H)\right)
+\Pr(G_{\boldsymbol{X}}\cong H)\\
+&=\sum_{H\in\mathcal T_8}(F_H)_{ij}
+\Pr(G_{\boldsymbol{X}}\cong H).
+\end{align*}
+Thus
+\begin{equation}\label{eq:F-average-over-eight-graphs}
+\mathsf F=\sum_{H\in\mathcal T_8}
+\Pr(G_{\boldsymbol{X}}\cong H)F_H.
+\end{equation}
+By \eqref{eq:F-average-over-eight-graphs},
+\eqref{eq:finite-trace-identities}, linearity of the trace, and the
+positive semidefiniteness of $M_G^\sigma$ for each type $\sigma$ in
+\eqref{eq:averaged-count-psd}, we obtain
+\begin{equation}\label{eq:trace-flag-decomposition}
+\begin{aligned}
+\tr(B\mathsf F)
+&=\sum_{H\in\mathcal T_8}\Pr(G_{\boldsymbol{X}}\cong H)\tr(BF_H)\\
+&=-\sum_{H\in\mathcal T_8}\Pr(G_{\boldsymbol{X}}\cong H)
+\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr(M_\sigma C_H^\sigma)\\
+&=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr\left(M_\sigma\sum_{H\in\mathcal T_8}
+\Pr(G_{\boldsymbol{X}}\cong H)C_H^\sigma\right)\\
+&=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr(M_\sigma M_G^\sigma)\leq0.
+\end{aligned}
+\end{equation}
+Since $G$ was arbitrary, Lemma~\ref{lem:sufficient-condition} now
+proves \eqref{eq:main-bound}.
+\end{proof}
+
+To find $B$ and $M_\sigma$ satisfying
+\eqref{eq:finite-trace-identities}, we use semidefinite programming as follows:
+\begin{equation}\label{eq:matrix-search-sdp}
+\begin{aligned}
+\text{minimize}\quad &\tau\\
+\text{subject to}\quad
+&B_{00}=1,\qquad B-10^{-8}I\succeq0,\qquad\tau\geq0,\\
+&M_\sigma\succeq0
+\quad\left(\sigma\in\bigcup_{k=0}^6\mathcal T_k\right),\\
+&-\tau\leq10^6\left(
+\tr(BF_H)+\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr(M_\sigma C_H^\sigma)\right)\leq\tau
+\quad(H\in\mathcal T_8).
+\end{aligned}
+\end{equation}
+Here $\succeq0$ means positive semidefinite. We then apply rational approximation and exact correction to obtain rational positive semidefinite matrices $B$ and $M_\sigma$ satisfying
+\[
+\tr(BF_H)+\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr(M_\sigma C_H^\sigma)=0
+\qquad(H\in\mathcal T_8).
+\]
+
+We store the resulting matrices through integer data
+$L,q,X_*,X_\sigma,V_\sigma,\Delta,a_\sigma$, where $X_*$ and $X_\sigma$
+are symmetric and $q,\Delta,a_\sigma$ are positive.
+These data can be found in
+\href{https://github.com/Diudiutse/triangle-free-signless-laplacian/blob/main/programs/spectral_data.py}{\texttt{programs/spectral\_data.py}}
+and
+\href{https://github.com/Diudiutse/triangle-free-signless-laplacian/blob/main/programs/sigma_data.py}{\texttt{programs/sigma\_data.py}}.
+The matrices required in Lemma~\ref{lem:finite-trace-reduction} are
+\begin{equation}\label{eq:stored-matrix-construction}
+B=L(qI+X_*)L^{\mathsf T},\qquad
+M_\sigma=\frac{2^{80}}{8!\,a_\sigma^2}
+V_\sigma(qI+X_\sigma)V_\sigma^{\mathsf T},
+\end{equation}
+
+The exact data satisfy the following conditions:
+\begin{enumerate}
+\renewcommand{\labelenumi}{(\roman{enumi})}
+\renewcommand{\theenumi}{\roman{enumi}}
+\item\label{cond:integer-L-invertible}
+$L$ is invertible.
+\item\label{cond:integer-spectral-positive}
+For every $i\in\{0,\ldots,4\}$,
+\[
+q+(X_*)_{ii}>\sum_{j\ne i}|(X_*)_{ij}|.
+\]
+\item\label{cond:integer-flag-positive}
+For every $\sigma\in\bigcup_{k=0}^6\mathcal T_k$ and every row $i$
+of $X_\sigma$,
+\[
+q+(X_\sigma)_{ii}>\sum_{j\ne i}|(X_\sigma)_{ij}|.
+\]
+\item\label{cond:integer-trace-identities}
+For every $H\in\mathcal T_8$,
+\begin{align}
+0&=\frac{\Delta}{2^{80}}
+\tr\left(L(qI+X_*)L^{\mathsf T}F_H\right)\notag\\
+&\quad+\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\frac{\Delta}{8!\,a_\sigma^2}
+\tr\left(V_\sigma(qI+X_\sigma)V_\sigma^{\mathsf T}
+C_H^\sigma\right).
+\label{eq:exact-integer-identities}
+\end{align}
+\end{enumerate}
+
+Condition~(\ref{cond:integer-L-invertible}) follows directly since $L$
+is lower triangular with nonzero diagonal entries.
+Conditions~(\ref{cond:integer-spectral-positive}) and
+(\ref{cond:integer-flag-positive}) require $1\,650$ row inequalities,
+and condition~(\ref{cond:integer-trace-identities}) requires $410$
+identities. The whole verification involves on the order of $10^{10}$
+scalar arithmetic operations.
+The verification programs and instructions are given in
+\href{https://github.com/Diudiutse/triangle-free-signless-laplacian/tree/main/programs}{\texttt{programs/}}
+and its
+\href{https://github.com/Diudiutse/triangle-free-signless-laplacian/blob/main/programs/README.md}{\texttt{README.md}}.
+
+\begin{proof}[Proof of the inequality in Theorem~\ref{thm:bound}]
+By conditions~(\ref{cond:integer-L-invertible}),
+(\ref{cond:integer-spectral-positive}), and
+(\ref{cond:integer-flag-positive}) and the Gershgorin circle
+theorem~\cite{Varga}, $B$ is positive definite and every $M_\sigma$
+is positive semidefinite.
+Condition~(\ref{cond:integer-trace-identities}), multiplied by
+$2^{80}/\Delta$, gives \eqref{eq:finite-trace-identities}.
+Hence Lemma~\ref{lem:finite-trace-reduction} proves
+\eqref{eq:main-bound}.
+\end{proof}

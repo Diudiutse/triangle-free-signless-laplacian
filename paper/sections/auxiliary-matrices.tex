@@ -1,0 +1,250 @@
+\section{Construction of the auxiliary matrices and a sufficient condition for the upper bound}
+\label{sec:auxiliary-matrices}
+\label{sec:preliminary}
+
+Throughout this section, let $G=(V,E(G))$ be a finite simple triangle-free
+graph with $n=|V|\geq1$, and let $A=A_G$.
+Fix an ordering of $V$, and index the rows and columns of $A$ by this
+ordering.
+For $v\in V$, its degree and the signless Laplacian are
+\[
+\deg_G(v)=\big|\{w\in V:\{v,w\}\in E(G)\}\big|
+=\sum_{w\in V}A_{vw},
+\qquad
+Q_G=\operatorname{diag}_{v\in V}(\deg_G(v))+A.
+\]
+For $C,D\subseteq V$, write
+\[
+A_{C,D}=(A_{cd})_{c\in C,\,d\in D},
+\]
+with rows and columns in the orders inherited from $V$.
+When $D=\{x\}$, write $A_{C,x}$ for $A_{C,\{x\}}$.
+In particular, $A_{V,x}$ is a real column vector indexed by $V$, with
+coordinate $A_{zx}$ at $z\in V$.
+For a real column vector $u$ indexed by $V$, write
+\[
+\|u\|^2=u^{\mathsf T}u=\sum_{z\in V}u(z)^2.
+\]
+The notation $I$ denotes the identity matrix of the order determined
+by context.
+An average over $x,y$ always means independent uniform samples from $V$
+with replacement:
+\[
+\E_{x,y}f(x,y)=\frac1{n^2}\sum_{x,y\in V}f(x,y).
+\]
+Thus the ordered pairs are averaged with weight $1/n^2$, including
+pairs with $x=y$.
+
+\subsection{Definition of the auxiliary matrices}
+\label{subsec:auxiliary-definitions}
+
+For every ordered pair $(x,y)\in V^2$, define the $n\times5$ real matrix
+\begin{equation}\label{eq:new-U-matrix}
+U^{xy}=\big(U_0^{xy}\ \ U_1^{xy}\ \ U_2^{xy}\ \ U_3^{xy}\ \ U_4^{xy}\big),
+\end{equation}
+whose columns are the following real column vectors indexed by $V$:
+\begin{align}
+U_0^{xy}
+&=\left(\frac An-\frac1{50}I\right)
+   (A_{V,x}-A_{V,y}),
+\label{eq:new-U0}\\
+U_1^{xy}
+&=\frac{\deg_G(x)-\deg_G(y)}n
+   (A_{V,x}+A_{V,y}),
+\label{eq:new-U1}\\
+U_2^{xy}
+&=\operatorname{diag}_{z\in V}\left(
+   \frac{\deg_G(z)}n-\frac{\deg_G(x)+\deg_G(y)}{2n}\right)
+   (A_{V,x}-A_{V,y}),
+\label{eq:new-U2}\\
+U_3^{xy}
+&=\left(\frac{A^2}{n^2}+\frac{3A}{50n}-\frac1{625}I\right)
+   (A_{V,x}-A_{V,y}),
+\label{eq:new-U3}\\
+U_4^{xy}
+&=\operatorname{diag}_{z\in V}\left(
+   \frac{\deg_G(z)}n-\frac{\deg_G(x)+\deg_G(y)}{2n}\right)U_0^{xy}
+   \notag\\
+&\quad+\frac{(\deg_G(x)-\deg_G(y))^2}{4n^2}
+   (A_{V,x}-A_{V,y}).
+\label{eq:new-U4}
+\end{align}
+These definitions apply to all ordered pairs, including nonedges.
+The factor $A_{xy}$ in the averages below makes nonedges contribute zero.
+
+For $i,j\in\{0,1,2,3,4\}$, define
+\begin{align}
+\mathsf D_{ij}
+&=\E_{x,y}\left[\frac{A_{xy}}n
+   (U_i^{xy})^{\mathsf T}U_j^{xy}\right],
+\label{eq:new-D-entry}\\
+\mathsf F_{ij}
+&=\E_{x,y}\left[\frac{A_{xy}}n
+   (U_i^{xy})^{\mathsf T}
+   \left(\frac{Q_G}n-\frac7{50}I\right)U_j^{xy}\right],
+\label{eq:new-F-entry}
+\end{align}
+and set
+\begin{equation}\label{eq:new-DF-matrices}
+\mathsf D=(\mathsf D_{ij})_{i,j=0}^4,
+\qquad
+\mathsf F=(\mathsf F_{ij})_{i,j=0}^4.
+\end{equation}
+Both matrices are $5\times5$, with rows and columns indexed by
+$0,1,2,3,4$ in the column order of $U^{xy}$.
+Equivalently,
+\begin{align}
+\mathsf D
+&=\E_{x,y}\left[\frac{A_{xy}}n
+   (U^{xy})^{\mathsf T}U^{xy}\right],
+\label{eq:new-D-matrix}\\
+\mathsf F
+&=\E_{x,y}\left[\frac{A_{xy}}n
+   (U^{xy})^{\mathsf T}
+   \left(\frac{Q_G}n-\frac7{50}I\right)U^{xy}\right].
+\label{eq:new-F-matrix}
+\end{align}
+The matrix $Q_G$ is symmetric, so the two matrices in
+\eqref{eq:new-DF-matrices} are real symmetric matrices.
+The trace of a square matrix $M$ is denoted by
+$\tr(M)=\sum_i M_{ii}$.
+
+\subsection{A sufficient condition for the upper bound}
+\label{subsec:sufficient-condition}
+
+\begin{lemma}\label{lem:sufficient-condition}
+If there exists a real symmetric positive definite $5\times5$ matrix
+$B$ such that, for every finite simple triangle-free graph $G$ with
+$n=|V(G)|\geq1$,
+\[
+\tr(B\mathsf F)\leq0,
+\]
+where $\mathsf F$ is defined from $G$ by \eqref{eq:new-F-matrix},
+then \eqref{eq:main-bound} holds for every finite simple triangle-free
+graph $G$ of order $n\geq1$.
+\end{lemma}
+
+\begin{proof}
+Let $B$ satisfy the hypotheses, and fix a finite simple triangle-free
+graph $G$ with $n\geq1$ vertices.
+If $E(G)=\varnothing$, then $Q_G=0$ and
+$\qmin(G)=0\leq7n/50$.
+We may therefore assume $E(G)\ne\varnothing$.
+
+We first check that $\mathsf D$ is positive semidefinite and has positive
+trace.
+For any real column vector $u=(u_0,\ldots,u_4)^{\mathsf T}\in\R^5$,
+equations~\eqref{eq:new-U-matrix} and \eqref{eq:new-D-entry} give
+\begin{align}
+u^{\mathsf T}\mathsf D u
+&=\sum_{i,j=0}^4u_i u_j\mathsf D_{ij}\notag\\
+&=\E_{x,y}\left[\frac{A_{xy}}n
+  \sum_{i,j=0}^4u_i u_j(U_i^{xy})^{\mathsf T}U_j^{xy}\right]\notag\\
+&=\E_{x,y}\left[\frac{A_{xy}}n\|U^{xy}u\|^2\right]\geq0.
+\label{eq:new-D-psd}
+\end{align}
+Here $A_{xy}/n\geq0$ for every ordered pair, so $\mathsf D$ is positive
+semidefinite.
+
+For an ordered edge $(x,y)$, triangle-freeness implies
+$A_{xz}A_{yz}=0$ for every $z\in V$.
+The coordinate at $z$ in \eqref{eq:new-U0} is
+\begin{equation}\label{eq:new-U0-coordinate}
+U_0^{xy}(z)
+=\frac1n\sum_{t\in V}A_{zt}(A_{tx}-A_{ty})
+ -\frac1{50}(A_{zx}-A_{zy}).
+\end{equation}
+In particular, using $A_{xx}=A_{yy}=0$, $A_{xy}=A_{yx}=1$, symmetry of
+$A$, and $A_{zt}^2=A_{zt}$, we obtain
+\begin{align}
+U_0^{xy}(x)
+&=\frac1n\sum_{t\in V}
+  (A_{xt}^2-A_{xt}A_{yt})+\frac1{50}\notag\\
+&=\frac{\deg_G(x)}n+\frac1{50}>0,
+\label{eq:new-U0-at-x}\\
+U_0^{xy}(y)
+&=\frac1n\sum_{t\in V}
+  (A_{yt}A_{xt}-A_{yt}^2)-\frac1{50}\notag\\
+&=-\frac{\deg_G(y)}n-\frac1{50}<0.
+\label{eq:new-U0-at-y}
+\end{align}
+Thus $U_0^{xy}\ne0$ for every ordered edge.
+Taking the trace in \eqref{eq:new-D-matrix} yields
+\begin{align}
+\tr(\mathsf D)
+&=\E_{x,y}\left[\frac{A_{xy}}n
+  \sum_{i=0}^4\|U_i^{xy}\|^2\right]\notag\\
+&\geq\E_{x,y}\left[\frac{A_{xy}}n\|U_0^{xy}\|^2\right]>0.
+\label{eq:new-D-positive-trace}
+\end{align}
+The strict inequality holds because the edge set is nonempty and every
+ordered edge has positive sampling probability $1/n^2$ and a nonzero
+column $U_0^{xy}$.
+
+By the definition of the least eigenvalue,
+$Q_G-\qmin(G)I$ is positive semidefinite.
+Subtracting the corresponding multiple of \eqref{eq:new-D-matrix}
+from \eqref{eq:new-F-matrix}, for every $u\in\R^5$ we obtain
+\begin{align}
+&u^{\mathsf T}\left[
+\mathsf F-\left(\frac{\qmin(G)}n-\frac7{50}\right)\mathsf D
+\right]u\notag\\
+&=\E_{x,y}\left[\frac{A_{xy}}n
+(U^{xy}u)^{\mathsf T}
+\left(\frac{Q_G}n-\frac7{50}I
+-\left(\frac{\qmin(G)}n-\frac7{50}\right)I\right)
+(U^{xy}u)\right]\notag\\
+&=\E_{x,y}\left[\frac{A_{xy}}n
+(U^{xy}u)^{\mathsf T}
+\frac{Q_G-\qmin(G)I}{n}
+(U^{xy}u)\right]\geq0.
+\label{eq:new-matrix-rayleigh}
+\end{align}
+Hence
+$\mathsf F-(\qmin(G)/n-7/50)\mathsf D$ is positive semidefinite.
+The trace of the product of two real symmetric positive semidefinite
+matrices is nonnegative~\cite[Example~2.24]{BoydVandenberghe}.
+Applying this fact with the positive definite matrix $B$ and the matrix
+in \eqref{eq:new-matrix-rayleigh}, and using linearity of the trace, gives
+\begin{align}
+0
+&\leq\tr\left(B\left[
+\mathsf F-\left(\frac{\qmin(G)}n-\frac7{50}\right)\mathsf D
+\right]\right)\notag\\
+&=\tr(B\mathsf F)
+-\left(\frac{\qmin(G)}n-\frac7{50}\right)\tr(B\mathsf D).
+\label{eq:new-weighted-rayleigh}
+\end{align}
+
+To divide by $\tr(B\mathsf D)$, we need its strict positivity.
+Since $B$ is positive definite,
+$\lambda_{\min}(B)>0$ and
+$B-\lambda_{\min}(B)I$ is positive semidefinite.
+Using \eqref{eq:new-D-psd} and the same trace nonnegativity gives
+\begin{align*}
+\tr(B\mathsf D)-\lambda_{\min}(B)\tr(\mathsf D)
+&=\tr\big((B-\lambda_{\min}(B)I)\mathsf D\big)\geq0.
+\end{align*}
+Consequently, \eqref{eq:new-D-positive-trace} implies
+\begin{equation}\label{eq:new-weighted-D-positive}
+\tr(B\mathsf D)
+\geq\lambda_{\min}(B)\tr(\mathsf D)>0.
+\end{equation}
+Rearranging \eqref{eq:new-weighted-rayleigh} and applying the hypothesis
+$\tr(B\mathsf F)\leq0$ now yields
+\[
+\left(\frac{\qmin(G)}n-\frac7{50}\right)\tr(B\mathsf D)
+\leq\tr(B\mathsf F)\leq0.
+\]
+Division by the positive quantity in
+\eqref{eq:new-weighted-D-positive} gives
+\[
+\frac{\qmin(G)}n-\frac7{50}
+\leq\frac{\tr(B\mathsf F)}{\tr(B\mathsf D)}\leq0,
+\]
+and hence $\qmin(G)\leq7n/50$.
+Since $G$ was arbitrary, this proves \eqref{eq:main-bound}.
+\end{proof}
+
+In Sections~\ref{sec:definitions} and~\ref{sec:proof}, we construct a positive
+definite matrix $B$ satisfying the condition in Lemma~\ref{lem:sufficient-condition}.

@@ -1,0 +1,345 @@
+\section{Equality cases}
+\label{sec:equality-cases}
+
+We now determine all graphs attaining equality in \eqref{eq:main-bound}.
+The argument uses two additional exact identities for the matrices
+$V_\sigma$, followed by a count of common neighbors.
+
+\begin{lemma}\label{lem:equality-flag-identities}
+Let $k\in\{1,2\}$, $\ell=\lfloor(8+k)/2\rfloor$, and $\sigma=([k],\varnothing)$.
+Every flag $P\in\mathcal F_{\sigma,\ell}$ has three unlabeled vertices.
+Define
+\[
+d(P)=\big|\{v\in V(P)\setminus[k]:\{1,v\}\in E(P)\}\big|.
+\]
+For $k=2$, also define
+\[
+c(P)=\big|\{v\in V(P)\setminus[2]:
+\{1,v\}\in E(P),\ \{2,v\}\in E(P)\}\big|.
+\]
+For the fixed matrices $V_\sigma$ used in
+\eqref{eq:stored-matrix-construction}, the following statements hold.
+If $\sigma=([1],\varnothing)$, there exists a rational column vector
+$b\in\mathbb Q^{10}$ such that
+\begin{equation}\label{eq:equality-one-root-vector}
+V_\sigma b
+=\big(25d(P)(d(P)-1)-11d(P)\big)_{P\in\mathcal F_{\sigma,\ell}}.
+\end{equation}
+If $\sigma=([2],\varnothing)$, there exists a rational column vector
+$b\in\mathbb Q^{54}$ such that
+\begin{equation}\label{eq:equality-two-root-vector}
+V_\sigma b
+=\big(25c(P)(c(P)-1)-14c(P)+3d(P)\big)_{P\in\mathcal F_{\sigma,\ell}}.
+\end{equation}
+\end{lemma}
+The proof of Lemma~\ref{lem:equality-flag-identities} is entirely computational;
+see \href{https://github.com/Diudiutse/triangle-free-signless-laplacian/blob/main/programs/verify_equality.py}{\texttt{programs/verify\_equality.py}}.
+
+We also use the following uniqueness theorem.
+\begin{lemma}[{\cite[Theorem~6.4]{Gewirtz1969}}]
+\label{lem:higman-sims-uniqueness}
+Up to isomorphism, the Higman--Sims graph is the unique triangle-free
+$22$-regular graph on $100$ vertices in which any two distinct
+nonadjacent vertices have exactly $6$ common neighbors.
+\end{lemma}
+In the original notation, this graph is $r(2,6,22,100)$.
+The parameters specify diameter $2$, exactly $6$ paths of length $2$
+between vertices at distance $2$, degree $22$, and order $100$.
+The conditions in Lemma~\ref{lem:higman-sims-uniqueness} imply diameter
+$2$; they also imply girth $4$, since two nonadjacent vertices and two
+of their common neighbors form a $4$-cycle, while triangles are excluded.
+
+\noindent\emph{Proof of the equality statement in Theorem~\ref{thm:bound}.}
+As shown in \cite{deLimaNikiforovOliveira}, for every integer
+$m\geq1$, the graph $\mathrm{HS}^m$ is triangle-free and satisfies
+\[
+|V(\mathrm{HS}^m)|=100m,
+\qquad \qmin(\mathrm{HS}^m)=14m=\frac7{50}|V(\mathrm{HS}^m)|.
+\]
+Graph isomorphisms preserve the signless Laplacian spectrum, so the
+same equality holds for every $G\cong \mathrm{HS}^m$.
+
+Conversely, suppose that $\qmin(G)=7n/50$.
+Write $V=V(G)$, $A=A_G$, and
+\[
+Q_G=\operatorname{diag}_{v\in V}(\deg_G(v))+A.
+\]
+Every eigenvalue of $Q_G/n-7I/50$ is nonnegative.
+By \eqref{eq:new-F-matrix}, for every real column vector $u\in\R^5$,
+\begin{align*}
+u^{\mathsf T}\mathsf F u
+&=\E_{x,y}\left[
+\frac{A_{xy}}n
+(U^{xy}u)^{\mathsf T}
+\left(\frac{Q_G}n-\frac7{50}I\right)
+(U^{xy}u)\right]\geq0.
+\end{align*}
+Thus $\mathsf F$ is positive semidefinite.
+Let $B$ be as in the proof of \eqref{eq:main-bound}.
+Hence $\tr(B\mathsf F)\geq0$.
+By the proof of \eqref{eq:main-bound}, $\tr(B\mathsf F)\leq0$.
+Therefore
+\begin{equation}\label{eq:equality-zero-trace}
+\tr(B\mathsf F)=0.
+\end{equation}
+
+For each type $\sigma\in\mathcal T_k$, $0\leq k\leq6$, set
+$\ell=\lfloor(8+k)/2\rfloor$ and define the column vector
+\[
+p_\sigma(\boldsymbol r)
+=\big(\Pr(P\mid\boldsymbol r)\big)_{P\in\mathcal F_{\sigma,\ell}}
+\qquad(\boldsymbol r\in V^k).
+\]
+In the following expectation, $\boldsymbol r$ is uniformly distributed on $V^k$.
+\begin{samepage}
+By \eqref{eq:equality-zero-trace}, \eqref{eq:trace-flag-decomposition},
+\eqref{eq:flag-entry-average}, and \eqref{eq:stored-matrix-construction},
+we obtain
+\begin{align}
+0&=\tr(B\mathsf F)\notag\\
+&=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr\left(M_\sigma\sum_{H\in\mathcal T_8}
+\Pr(G_{\boldsymbol X}\cong H)C_H^\sigma\right)\notag\\
+&=-8!\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\tr\Bigl(M_\sigma\E_{\boldsymbol r}\Bigl[
+\ind_{G_{\boldsymbol r}=\sigma}
+\bigl(\Pr(P\mid\boldsymbol r)\Pr(P'\mid\boldsymbol r)\bigr)
+_{P,P'\in\mathcal F_{\sigma,\ell}}\Bigr]\Bigr)\notag\\
+&=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\frac{2^{80}}{a_\sigma^2}
+\tr\Bigl(V_\sigma(qI+X_\sigma)V_\sigma^{\mathsf T}
+\E_{\boldsymbol r}\Bigl[\ind_{G_{\boldsymbol r}=\sigma}
+\bigl(\Pr(P\mid\boldsymbol r)\Pr(P'\mid\boldsymbol r)\bigr)
+_{P,P'\in\mathcal F_{\sigma,\ell}}\Bigr]\Bigr)\notag\\
+&=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\frac{2^{80}}{a_\sigma^2}
+\tr\Bigl(V_\sigma(qI+X_\sigma)V_\sigma^{\mathsf T}
+\E_{\boldsymbol r}\Bigl[\ind_{G_{\boldsymbol r}=\sigma}
+p_\sigma(\boldsymbol r)p_\sigma(\boldsymbol r)^{\mathsf T}\Bigr]\Bigr)\notag\\
+&=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\frac{2^{80}}{a_\sigma^2}
+\E_{\boldsymbol r}\Bigl[\ind_{G_{\boldsymbol r}=\sigma}
+\tr\Bigl(V_\sigma(qI+X_\sigma)V_\sigma^{\mathsf T}
+p_\sigma(\boldsymbol r)p_\sigma(\boldsymbol r)^{\mathsf T}\Bigr)\Bigr]\notag\\
+&=-\sum_{k=0}^6\sum_{\sigma\in\mathcal T_k}
+\frac{2^{80}}{a_\sigma^2}
+\E_{\boldsymbol r}\Bigl[\ind_{G_{\boldsymbol r}=\sigma}
+p_\sigma(\boldsymbol r)^{\mathsf T}
+V_\sigma(qI+X_\sigma)V_\sigma^{\mathsf T}
+p_\sigma(\boldsymbol r)\Bigr].
+\label{eq:equality-flag-zero-sum}
+\end{align}
+\end{samepage}
+Every $qI+X_\sigma$ is positive definite by
+condition~(\ref{cond:integer-flag-positive}).
+Since all summands inside these finite averages are nonnegative and
+each tuple has probability $n^{-k}>0$, it follows that for every
+$\boldsymbol r\in V^k$ with $G_{\boldsymbol r}=\sigma$,
+\begin{equation}\label{eq:equality-root-kernel}
+V_\sigma^{\mathsf T}p_\sigma(\boldsymbol r)=0.
+\end{equation}
+Consequently, for every $\boldsymbol r\in V^k$ with
+$G_{\boldsymbol r}=\sigma$ and every column vector $w$ of the appropriate
+dimension,
+\begin{equation}\label{eq:equality-column-consequence}
+\sum_{P\in\mathcal F_{\sigma,\ell}}
+(V_\sigma w)_P\Pr(P\mid\boldsymbol r)
+=w^{\mathsf T}V_\sigma^{\mathsf T}p_\sigma(\boldsymbol r)=0.
+\end{equation}
+
+Fix $x\in V$ and take $\sigma=([1],\varnothing)$.
+For $P\in\mathcal F_{\sigma,4}$, we write $\Pr(P\mid x)$ for
+$\Pr(P\mid(x))$ in \eqref{eq:conditional-probability}, viewing $(x)$
+as a one-dimensional root vector.
+Let $\boldsymbol Y=(Y_2,Y_3,Y_4)$ be uniformly distributed on $V^3$.
+Then
+\begingroup
+\allowdisplaybreaks[1]
+\begin{align}
+&\sum_{P\in\mathcal F_{\sigma,4}}d(P)\Pr(P\mid x)\notag\\
+&=\sum_{P\in\mathcal F_{\sigma,4}}d(P)
+\frac{\big|\{\boldsymbol Y\in V^3:
+(G_{(x,\boldsymbol Y)},\iota)\cong_\sigma P\}\big|}{n^3}\notag\\
+&=\sum_{P\in\mathcal F_{\sigma,4}}d(P)
+\E_{\boldsymbol Y}\big[\ind_{\{(G_{(x,\boldsymbol Y)},\iota)\cong_\sigma P\}}\big]\notag\\
+&=\E_{\boldsymbol Y}\big[d(G_{(x,\boldsymbol Y)})\big]\notag\\
+&=\E_{\boldsymbol Y}\left[\sum_{i=2}^4 A_{xY_i}\right]\notag\\
+&=\sum_{i=2}^4\E_{Y_i}A_{xY_i}
+=\frac3n\sum_{z\in V}A_{xz}
+=\frac{3\deg_G(x)}n.
+\label{eq:equality-degree-first-moment}
+\end{align}
+Using $A_{xY_i}^2=A_{xY_i}$, we also have
+\begin{align}
+&\sum_{P\in\mathcal F_{\sigma,4}}d(P)(d(P)-1)\Pr(P\mid x)\notag\\
+&=\sum_{P\in\mathcal F_{\sigma,4}}d(P)(d(P)-1)
+\frac{\big|\{\boldsymbol Y\in V^3:
+(G_{(x,\boldsymbol Y)},\iota)\cong_\sigma P\}\big|}{n^3}\notag\\
+&=\sum_{P\in\mathcal F_{\sigma,4}}d(P)(d(P)-1)
+\E_{\boldsymbol Y}\big[\ind_{\{(G_{(x,\boldsymbol Y)},\iota)\cong_\sigma P\}}\big]\notag\\
+&=\E_{\boldsymbol Y}\big[
+ d(G_{(x,\boldsymbol Y)})(d(G_{(x,\boldsymbol Y)})-1)\big]\notag\\
+&=\E_{\boldsymbol Y}\left[
+\left(\sum_{i=2}^4 A_{xY_i}\right)^2-\sum_{i=2}^4 A_{xY_i}\right]\notag\\
+&=\sum_{\substack{2\leq i,j\leq4\\i\ne j}}
+\E_{Y_i,Y_j}[A_{xY_i}A_{xY_j}]\notag\\
+&=\sum_{\substack{2\leq i,j\leq4\\i\ne j}}
+\left(\frac1n\sum_{z\in V}A_{xz}\right)
+\left(\frac1n\sum_{z'\in V}A_{xz'}\right)
+=6\left(\frac{\deg_G(x)}n\right)^2.
+\label{eq:equality-degree-second-moment}
+\end{align}
+Taking $w=b$ in \eqref{eq:equality-column-consequence}, and using
+\eqref{eq:equality-one-root-vector},
+\eqref{eq:equality-degree-first-moment}, and
+\eqref{eq:equality-degree-second-moment}, we obtain
+\begin{align*}
+0&=\sum_{P\in\mathcal F_{\sigma,4}}(V_\sigma b)_P\Pr(P\mid x)\\
+&=\sum_{P\in\mathcal F_{\sigma,4}}
+\big(25d(P)(d(P)-1)-11d(P)\big)\Pr(P\mid x)\\
+&=25\cdot6\left(\frac{\deg_G(x)}n\right)^2
+-11\cdot\frac{3\deg_G(x)}n\\
+&=150\frac{\deg_G(x)}n
+\left(\frac{\deg_G(x)}n-\frac{11}{50}\right).
+\end{align*}
+The equality $\qmin(G)=7n/50>0$ excludes isolated vertices,
+so $\deg_G(x)>0$.
+It follows that $G$ is regular, with
+\begin{equation}\label{eq:equality-regularity}
+\deg_G(x)=\frac{11n}{50}\qquad(x\in V).
+\end{equation}
+
+We next determine the common-neighbor counts.
+Write $N_G(x)=\{z\in V:A_{xz}=1\}$.
+For $x,y\in V$ with $A_{xy}=0$, take
+$\sigma=([2],\varnothing)$.
+Here $\Pr(P\mid x,y)$ denotes $\Pr(P\mid(x,y))$ in
+\eqref{eq:conditional-probability}, with root vector $(x,y)$.
+For $\boldsymbol Y=(Y_3,Y_4,Y_5)$ uniformly distributed on $V^3$,
+\begin{align*}
+&\sum_{P\in\mathcal F_{\sigma,5}}c(P)\Pr(P\mid x,y)\\
+&=\sum_{P\in\mathcal F_{\sigma,5}}c(P)
+\frac{\big|\{\boldsymbol Y\in V^3:
+(G_{(x,y,\boldsymbol Y)},\iota)\cong_\sigma P\}\big|}{n^3}\\
+&=\sum_{P\in\mathcal F_{\sigma,5}}c(P)
+\E_{\boldsymbol Y}\big[\ind_{\{(G_{(x,y,\boldsymbol Y)},\iota)\cong_\sigma P\}}\big]\\
+&=\E_{\boldsymbol Y}\big[c(G_{(x,y,\boldsymbol Y)})\big]\\
+&=\E_{\boldsymbol Y}\left[\sum_{i=3}^5 A_{xY_i}A_{yY_i}\right]\\
+&=\sum_{i=3}^5\E_{Y_i}[A_{xY_i}A_{yY_i}]
+=\frac3n\sum_{z\in V}A_{xz}A_{yz}\\
+&=\frac{3|N_G(x)\cap N_G(y)|}{n}.
+\end{align*}
+Similarly,
+\begin{align*}
+&\sum_{P\in\mathcal F_{\sigma,5}}c(P)(c(P)-1)\Pr(P\mid x,y)\\
+&=\sum_{P\in\mathcal F_{\sigma,5}}c(P)(c(P)-1)
+\frac{\big|\{\boldsymbol Y\in V^3:
+(G_{(x,y,\boldsymbol Y)},\iota)\cong_\sigma P\}\big|}{n^3}\\
+&=\sum_{P\in\mathcal F_{\sigma,5}}c(P)(c(P)-1)
+\E_{\boldsymbol Y}\big[\ind_{\{(G_{(x,y,\boldsymbol Y)},\iota)\cong_\sigma P\}}\big]\\
+&=\E_{\boldsymbol Y}\big[
+ c(G_{(x,y,\boldsymbol Y)})(c(G_{(x,y,\boldsymbol Y)})-1)\big]\\
+&=\E_{\boldsymbol Y}\left[
+\left(\sum_{i=3}^5 A_{xY_i}A_{yY_i}\right)^2
+-\sum_{i=3}^5 A_{xY_i}A_{yY_i}\right]\\
+&=\sum_{\substack{3\leq i,j\leq5\\i\ne j}}
+\E_{Y_i,Y_j}[A_{xY_i}A_{yY_i}A_{xY_j}A_{yY_j}]\\
+&=\sum_{\substack{3\leq i,j\leq5\\i\ne j}}
+\left(\frac1n\sum_{z\in V}A_{xz}A_{yz}\right)
+\left(\frac1n\sum_{z'\in V}A_{xz'}A_{yz'}\right)
+\\
+&=6\left(\frac{|N_G(x)\cap N_G(y)|}{n}\right)^2.
+\end{align*}
+For the degree count in the same flags,
+\begin{align*}
+&\sum_{P\in\mathcal F_{\sigma,5}}d(P)\Pr(P\mid x,y)\\
+&=\sum_{P\in\mathcal F_{\sigma,5}}d(P)
+\frac{\big|\{\boldsymbol Y\in V^3:
+(G_{(x,y,\boldsymbol Y)},\iota)\cong_\sigma P\}\big|}{n^3}\\
+&=\sum_{P\in\mathcal F_{\sigma,5}}d(P)
+\E_{\boldsymbol Y}\big[\ind_{\{(G_{(x,y,\boldsymbol Y)},\iota)\cong_\sigma P\}}\big]\\
+&=\E_{\boldsymbol Y}\big[d(G_{(x,y,\boldsymbol Y)})\big]\\
+&=\E_{\boldsymbol Y}\left[\sum_{i=3}^5 A_{xY_i}\right]\\
+&=\sum_{i=3}^5\E_{Y_i}A_{xY_i}
+=\frac3n\sum_{z\in V}A_{xz}
+=\frac{3\deg_G(x)}n=\frac{33}{50}.
+\end{align*}
+Using \eqref{eq:equality-two-root-vector} in
+\eqref{eq:equality-column-consequence}, we therefore obtain
+\begin{align*}
+0&=\sum_{P\in\mathcal F_{\sigma,5}}
+\big(25c(P)(c(P)-1)-14c(P)+3d(P)\big)\Pr(P\mid x,y)\\
+&=25\cdot6\left(\frac{|N_G(x)\cap N_G(y)|}{n}\right)^2-14\cdot3\frac{|N_G(x)\cap N_G(y)|}{n}+3\cdot\frac{33}{50}\\
+ &=150\left(\frac{|N_G(x)\cap N_G(y)|}{n}\right)^2-42\frac{|N_G(x)\cap N_G(y)|}{n}+\frac{99}{50}\\
+ &=150\left(\frac{|N_G(x)\cap N_G(y)|}{n}-\frac3{50}\right)
+       \left(\frac{|N_G(x)\cap N_G(y)|}{n}-\frac{11}{50}\right).
+\end{align*}
+\endgroup
+Hence
+\begin{equation}\label{eq:equality-common-neighbors}
+|N_G(x)\cap N_G(y)|\in
+\left\{\frac{3n}{50},\frac{11n}{50}\right\}
+\qquad(A_{xy}=0).
+\end{equation}
+For adjacent $x,y$, the common-neighbor count is zero by
+triangle-freeness.
+
+To recover the structure of $G$, partition $V$ into the classes
+\[
+W_x=\{y\in V:N_G(y)=N_G(x)\}.
+\]
+Each class is independent, since adjacent vertices cannot have equal
+neighbors.
+Moreover, for $x'\in W_x$ and $y'\in W_y$,
+\[
+A_{x'y'}=A_{xy'}=A_{xy},
+\]
+so two distinct classes induce either a complete bipartite graph or
+no edges.
+Put $d=11n/50$.
+By regularity, all neighborhoods have size $d$, and thus
+\[
+|N_G(x)\cap N_G(y)|=d
+\quad\Longleftrightarrow\quad y\in W_x.
+\]
+For $x\in V$,
+\begin{align}
+d^2
+&=\sum_{z\in N_G(x)}\deg_G(z)
+ =\sum_{z\in N_G(x)}\sum_{y\in V}A_{zy}\notag\\
+&=\sum_{y\in V}\sum_{z\in N_G(x)}A_{zy}
+ =\sum_{y\in V}|N_G(x)\cap N_G(y)|\notag\\
+&=\sum_{y\in W_x}d+\sum_{y\in N_G(x)}0
+ +\sum_{y\in V\setminus(W_x\cup N_G(x))}\frac{3n}{50}\notag\\
+&=|W_x|d+(n-|W_x|-d)\frac{3n}{50}\notag\\
+&=\frac{8n}{50}|W_x|+\frac{117n^2}{2500}.
+\label{eq:equality-common-neighbor-total}
+\end{align}
+Hence
+\begin{equation}\label{eq:equality-class-size}
+|W_x|=\frac{d^2-117n^2/2500}{8n/50}
+=\frac{4n^2/2500}{8n/50}=\frac n{100}.
+\end{equation}
+Thus $\frac n{100}$ is a positive integer and there are exactly $100$ classes.
+
+Let $R$ be the graph whose vertices are these classes, with two
+classes adjacent if all edges between them are present in $G$.
+The classes are independent and all have size $\frac n{100}$, so $G\cong R^{n/100}$.
+The graph $R$ is triangle-free, since any triangle in $R$ would lift
+to a triangle in $G$, and each vertex of $R$ has degree
+\[
+\frac{d}{n/100}=\frac{11n/50}{n/100}=22.
+\]
+If $W_x,W_y$ are distinct nonadjacent vertices of $R$, then $x,y$
+are nonadjacent in $G$ and have different neighborhoods.
+By \eqref{eq:equality-common-neighbors}, they have exactly $3n/50$
+common neighbors in $G$.
+These common neighbors form a disjoint union of classes of size $\frac n{100}$,
+so
+\[
+|N_R(W_x)\cap N_R(W_y)|
+=\frac{|N_G(x)\cap N_G(y)|}{n/100}
+=\frac{3n/50}{n/100}=6.
+\]
+Lemma~\ref{lem:higman-sims-uniqueness} now gives $R\cong \mathrm{HS}$.
+Therefore $G\cong R^{n/100}\cong \mathrm{HS}^{n/100}$, completing the proof.\hfill$\square$
