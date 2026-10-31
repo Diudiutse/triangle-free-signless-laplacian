@@ -120,16 +120,6 @@ Section 1 introduces the result. Section 2 constructs the auxiliary matrices and
 
 A numerical semidefinite program was used to find candidate matrices. Rational reconstruction and exact linear correction produced the supplied integer data. Running the verification programs requires no SDP solver, CVXPY, Clarabel, FLINT, or proof assistant. The checks are exact finite computations, not a completed Lean formalization.
 
-To build the paper with an existing LaTeX installation:
-
-```bash
-cd paper
-pdflatex -interaction=nonstopmode -halt-on-error main.tex
-pdflatex -interaction=nonstopmode -halt-on-error main.tex
-```
-
-The paper is a review draft.
-
 ## Statement on AI use
 
 The authors used GPT-6.1 Sol in the preparation of this work, including the development of proof arguments, the checking of intermediate steps, the generation and execution of semidefinite programming (SDP) code and code for verifying inequalities and equalities, and the drafting and revision of the manuscript and its LaTeX source. All mathematical results, arguments, and proofs were independently reviewed and verified by the authors, who take full responsibility for the accuracy and content of this work.
